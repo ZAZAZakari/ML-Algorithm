@@ -6,7 +6,7 @@ def main():
 
 	# ================== OBTAINING INPUT DATA DIMENSIONS =================== #
 	NUMBER_OF_DATA = len(inputData)
-	NUMBER_OF_FEATURES = len(inputData[0]) - 1
+	NUMBER_OF_FEATURES = len(inputData[0])-1
 
 	# ================== DECLARING AN EMPTY NORMALIZED INPUT DATA =================== #
 	normalizedInputData = np.ndarray(shape = (NUMBER_OF_DATA, 0))

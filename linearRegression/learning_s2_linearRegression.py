@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # ================= LINEAR REGRESSION PARAMETERS ================ #
-LEARNING_RATE = 0.1
+LEARNING_RATE = 0.001
 TERMINATION_SIZE = 0.00000001
 REGULARIZATION = 0.001
 
@@ -40,14 +40,14 @@ def linearRegression(theta, x, y):
 	costFunctionArray = [costNew]
 
 	# =========== PERFORM GRADIENT DESCENT UNTIL CONVERGE =========== #
-	while iterationCount<300000:
+	while iterationCount<10000:
 		costOld = costNew
 		theta = gradientDescent(theta, x, y)
 		costNew = costFunction(theta, x, y)
 		costFunctionArray.append(costNew)
 		
 
-		print "Rd:%d\t cost(%f, %f)\t theta(%s)" % (iterationCount, costOld, costNew, theta)
+		print "Rd:%d\t cost(%f) Delta(%f)\t theta(%s)" % (iterationCount, costOld, costOld-costNew, theta)
 		#if (np.absolute(costOld - costNew) <= TERMINATION_SIZE):
 		#	break
 		iterationCount += 1
@@ -56,7 +56,7 @@ def linearRegression(theta, x, y):
 	
 	plt.figure(1)
 	plt.plot(costFunctionArray)
-	plt.show()
+	plt.savefig('aa.jpg')
 	'''
 	plt.figure(2)
 	plt.plot(x[:,1], hy, x[:,1], y, 'o')
@@ -84,12 +84,8 @@ def main():
 	x = np.append(np.ones((NUMBER_OF_TRAINING_POINTS, 1)), x, 1)
 	y = inputDataSet[:, NUMBER_OF_FEATURES]
 
-	print x
-	print y
-
 	# =========== INITIALIZING THE VALUE OF THETA =============== #
 	theta = np.zeros(NUMBER_OF_FEATURES + 1)
-	print theta
 	print "NUMBER OF FEATURES (n) = %d" % (NUMBER_OF_FEATURES)
 	print "NUMBER OF TRAINING POINTS (m) = %d" % (NUMBER_OF_TRAINING_POINTS)
 
