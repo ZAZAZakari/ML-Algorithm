@@ -4,10 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 LEARNING_RATE = 0.001
-PROBLEM_SIZE = 15
-PROBLEM_DIMENSION = 3
 TERMINATION_SIZE = 0.0000001
-symbol = ['o', 'x']
+REGULARIZATION = 0.001
 
 # =========== THE HYPOTHESIS FUNCTION ============= #
 def hypothesisFunction(x, theta):
@@ -19,19 +17,22 @@ def sigmoidFunction(innerProduct):
 	
 # =========== GRADIENT DESCENT ============= #
 def gradientDescent(x, y, theta):
-	for j in range(0, PROBLEM_DIMENSION):
+	for j in range(0, NUMBER_OF_FEATURES+1):
 		sum = 0
-		for i in range(0, PROBLEM_SIZE):
+		for i in range(0, NUMBER_OF_TRAINING_POINTS):
 			sum += (hypothesisFunction(x[i], theta) - y[i]) * x[i][j]
-		theta[j] = theta[j] - (LEARNING_RATE / PROBLEM_SIZE) * sum
+		regularizingWeight = LEARNING_RATE * (REGULARIZATION / NUMBER_OF_TRAINING_POINTS)
+		theta[j] = theta[j] * (1- regularizingWeight) - (LEARNING_RATE / NUMBER_OF_TRAINING_POINTS) * sum
+		#theta[j] = theta[j] - (LEARNING_RATE / NUMBER_OF_TRAINING_POINTS) * sum
 	return theta
 	
 def costFunction(x, y, theta):
 	sum = 0
-	for i in range(0, PROBLEM_SIZE):
+	for i in range(0, NUMBER_OF_TRAINING_POINTS):
 		h = hypothesisFunction(x[i], theta)
 		sum = sum + y[i] * np.log(h) + (1-y[i]) * np.log(1-h)	
-	return -sum / PROBLEM_SIZE
+	regularizingWeight = (REGULARIZATION / 2) * np.sum(np.square(theta))
+	return (1 / NUMBER_OF_TRAINING_POINTS) * (-sum + regularizingWeight)
 
 def logisticRegression(x, y, theta):
 	
@@ -39,40 +40,48 @@ def logisticRegression(x, y, theta):
 	iterationCount = 0
 	costFunctionArray = [costNew]
 	
-	while True and iterationCount<100000:
+	while True and iterationCount<300000:
 		costOld = costNew
 		theta = gradientDescent(x, y, theta)
 		costNew = costFunction(x, y, theta)
 		costFunctionArray.append(costNew)
 		
-		if iterationCount % 5000 == 0:
-			print "Rd:%d\t cost(%f, %f)\t theta(%s)" % (iterationCount, costOld, costNew, theta)
+		print "Rd:%d\t cost(%f) Delta(%f)\t theta(%s)" % (iterationCount, costOld, costOld-costNew, theta)
 		
+		'''
 		if np.absolute(costOld - costNew) <= TERMINATION_SIZE:
 			break
+			'''
 		iterationCount += 1
 		
 	# VISUALIZATION START 
+	np.savetxt('data_trainedParameters.txt', theta)
 	
-	# EQUATION OF THE DECISION BOUNDARY 
-	hx = np.arange(0, x.max(axis=0)[1])
-	hy = (-theta[0] - theta[1] * hx) / theta[2]
-	plt.plot(hx, hy)
+	plt.figure(1)
+	plt.plot(costFunctionArray)
+	plt.savefig('aa.jpg')
 	
-	# PLOT DATA POINTS 
-	plt.scatter(x[:,1], x[:,2], c=y)
-	plt.show()
 	
 if __name__ == '__main__':
-	inputDataSet = np.array([[1,2,0],[2,5,0],[20,19,1],[3,4,0],[18,18,1],[15,17,1],[3,3,0],[6,1,0],[5,20,0],[15,15,1],[12,19,1],[10,9,1],[8,7,0],[17,15,1],[18,15,1]])
+	# =========== GLOBALIZE SOME VARIABLES ============= #
+	global NUMBER_OF_FEATURES, NUMBER_OF_TRAINING_POINTS
 	
-	x = inputDataSet[:, [0,1]]
-	x = np.append(np.ones((PROBLEM_SIZE,1)), x, 1)
+	# =========== READ IN INPUT DATA FROM AN EXTERNAL FILE ============ #
+	inputDataSet = np.loadtxt('data_normalizedInputData.txt')
 	
-	print x
-	y = inputDataSet[:, 2]
+	# =========== CHOPPING THE INPUT DATA INTO FEATURES(x) AND TARGET (y) =========== #
+	NUMBER_OF_FEATURES = len(inputDataSet[0]) - 1
+	NUMBER_OF_TRAINING_POINTS = len(inputDataSet)
 	
-	# INITIALIZING THETA VALUES
-	theta = np.array([-0.5, 0.3, -0.1])
+	print inputDataSet
+	
+	x = inputDataSet[:, range(0, NUMBER_OF_FEATURES)]
+	x = np.append(np.ones((NUMBER_OF_TRAINING_POINTS, 1)), x, 1)
+	y = inputDataSet[:, NUMBER_OF_FEATURES]
+	
+	# =========== INITIALIZING THE VALUE OF THETA =============== #
+	theta = np.zeros(NUMBER_OF_FEATURES + 1)
+	print "NUMBER OF FEATURES (n) = %d" % (NUMBER_OF_FEATURES)
+	print "NUMBER OF TRAINING POINTES (m) = %d" % (NUMBER_OF_TRAINING_POINTS)
 
 	logisticRegression(x, y, theta)

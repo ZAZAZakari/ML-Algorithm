@@ -13,15 +13,21 @@ print learnt_parameters
 
 for i in range(0, NUMBER_OF_FEATURES):
 	learnt_parameters[i+1] = (learnt_parameters[i+1] - minMax[i][0]) / (minMax[i][1] - minMax[i][0])
-#learnt_parameters[2] = (learnt_parameters[2] - minMax[1][0]) / (minMax[1][1] - minMax[1][0])
 '''
 learnt_parameters[1] = learnt_parameters[1] * (minMax[0][1] - minMax[0][0]) + minMax[0][0]
 learnt_parameters[2] = learnt_parameters[2] * (minMax[1][1] - minMax[1][0]) + minMax[1][0]
 learnt_parameters[3] = learnt_parameters[3] * (minMax[1][1] - minMax[2][0]) + minMax[2][0]
 '''
+hx = np.arange(-1, 5)
+hy = (-learnt_parameters[0] - learnt_parameters[1] * hx) / learnt_parameters[2]
+
 print learnt_parameters
 
+plt.plot(hx, hy)
+plt.scatter(inputData[:,0], inputData[:,1], c=inputData[:,2], marker='x')
 
+plt.savefig('b.jpg')
+'''
 x0 = np.ones((31,1))
 x1 = range(-1, 30)
 x2 = np.power(x1, 2)
@@ -38,3 +44,4 @@ y = np.inner(x0, learnt_parameters)
 
 plt.plot(inputData[:,0], inputData[:,NUMBER_OF_FEATURES], 'o',x, y)
 plt.savefig('bb.jpg')
+'''
