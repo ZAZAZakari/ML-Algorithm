@@ -1,67 +1,49 @@
-from sklearn.linear_model import LogisticRegression
-import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.externals import joblib
+
 import numpy as np
 
 def main():
 	# ========================================================================= #
 	# ================== STEP 1. LOAD EXTERNAL INPUT DATA ===================== #
 	# ========================================================================= #
-	inputData = np.loadtxt('data_inputData.txt')
-	testData = np.loadtxt('data_testData.txt')
-
+	trainingData = np.loadtxt('trainingSet.txt')
+	
 	# ========================================================================= #
 	# ================= STEP 2. PREPARE AND FORMATTING DATA =================== #
 	# ========================================================================= #
-	NUMBER_OF_FEATURES = len(inputData[0]) - 1
-	NUMBER_OF_TRAINING_POINTS = len(inputData)
+	NUMBER_OF_FEATURES = len(trainingData[0]) - 1
+	NUMBER_OF_TRAINING_POINTS = len(trainingData)
 
-	x = inputData[:, range(0, NUMBER_OF_FEATURES)]
-	y = inputData[:, NUMBER_OF_FEATURES]
-	testX = testData[:, range(0, NUMBER_OF_FEATURES)]
-	testY = testData[:, NUMBER_OF_FEATURES]
-
+	x = trainingData[:, range(0, NUMBER_OF_FEATURES)]
+	y = trainingData[:, NUMBER_OF_FEATURES]
+	
 	# ========================================================================= #
 	# ============== STEP 3. DECLARE PRIMITIVES BEFORE THE PARTY ============== #
 	# ========================================================================= #
 	minSquareError = np.inf
 	targetAlpha = None
-	alphas = np.logspace(-10, -2, 200)			
-	alphas = [1]
+	alphas = np.logspace(-10, -2, 500)			
+	
 	# ========================================================================= #
-	# ==================== STEP 4. FIND THE BEST ALPHA ======================== #
+	# ===== STEP 4. PERFORM FITTING WITH THE BEST ALPHA AND SAVE THE MODEL ==== #
 	# ========================================================================= #
-	for eachAlpha in alphas:
-		clf = LogisticRegression(C=eachAlpha)								# LINEAR REGRESSION CONFIGURATION
-		clf.fit(x, y)												# PERFORM FITTING 
-		squareError = np.mean((clf.predict(x) - y)**2)		# CALCULATE SQUARE ERROR 
-		if  (squareError <= minSquareError):						# OVERWRITE TARGET ALPHA
-			minSquareError = squareError
-			targetAlpha = eachAlpha
-
-	# ========================================================================= #
-	# ===== STEP 5. PERFORM FITTING WITH THE BEST ALPHA AND DO PREDICTION ===== #
-	# ========================================================================= #
-	clf = LogisticRegression(C=targetAlpha)
+	clf = LogisticRegressionCV(Cs=alphas)
 	clf.fit(x, y)
-
-	predictedData = clf.predict(testX)
-	squareError = (np.mean(predictedData - testY) ** 2)
+	squareError = clf.score(x,y)						# CALCULATE SQUARE ERROR 
+	joblib.dump(clf, 'learntModel.pkl')
 	
 	# ========================================================================= #
 	# ======================== STEP 6. VISUALISATION ========================== #
 	# ========================================================================= #
 	print ("\n")
 	print ("==============================================================")
-	print (" LOGISTIC REGRESSION ")
+	print (" LOGISTIC REGRESSION - LEARNING ")
 	print ("==============================================================")
 	print (" theta0: %.3g" % (clf.intercept_))
 	print (" theta1~n: %s" % (clf.coef_))
-	print (" Alpha: %0.3g" % (targetAlpha))
+	print (" Alpha: %0.3g" % (clf.C_))
 	print (" Square Error: %.3g" % (squareError))
-	print ("==============================================================")
-	print (" Predict results:")
-	for eachPredictedData in predictedData:
-		print (" %6g" % (eachPredictedData))
 	print ("==============================================================")
 	print ("\n")
 
