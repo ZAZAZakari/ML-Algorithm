@@ -36,7 +36,7 @@ def main():
 	print ("==============================================================")
 	print (" theta0: %.3g" % (clf.intercept_))
 	print (" theta1~n: %s" % (clf.coef_))
-	print (" Square Error: %.3g" % (validationError))
+	print (" Accuracy: %.3g" % (validationError))
 	print ("==============================================================")
 	print (" Predict results:")
 	for i in range(0, len(validationData)):

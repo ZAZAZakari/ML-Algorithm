@@ -43,7 +43,7 @@ def main():
 	print (" theta0: %.3g" % (clf.intercept_))
 	print (" theta1~n: %s" % (clf.coef_))
 	print (" Alpha: %0.3g" % (clf.C_))
-	print (" Square Error: %.3g" % (squareError))
+	print (" Accuracy: %.3g" % (squareError))
 	print ("==============================================================")
 	print ("\n")
 
