@@ -1,14 +1,14 @@
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.externals import joblib
-
 import numpy as np
 
-def main():
+def train(trainingData, pklFile):
 	# ========================================================================= #
-	# ================== STEP 1. LOAD EXTERNAL INPUT DATA ===================== #
+	# =============== STEP 1. DEFIEN OUTPUT LEARNT MODEL FILE ================= #
 	# ========================================================================= #
-	trainingData = np.loadtxt('trainingSet.txt')
-	
+	if (pklFile == ''):
+		pklFile = 'learntModel.pkl'
+
 	# ========================================================================= #
 	# ================= STEP 2. PREPARE AND FORMATTING DATA =================== #
 	# ========================================================================= #
@@ -30,22 +30,68 @@ def main():
 	# ========================================================================= #
 	clf = LogisticRegressionCV(Cs=alphas)
 	clf.fit(x, y)
-	squareError = clf.score(x,y)						# CALCULATE SQUARE ERROR 
-	joblib.dump(clf, 'learntModel.pkl')
+	joblib.dump(clf, pklFile)
+	
+	return {"intercept": clf.intercept_, "coef":clf.coef_, "alpha":clf.C_, "accuracy":clf.score(x,y)}
+
+def validate(validationData, pklFile):
+	# ========================================================================= #
+	# =============== STEP 1. DEFIEN INPUT LEARNT MODEL FILE ================== #
+	# ========================================================================= #
+	if (pklFile == ''):
+		pklFile = 'learntModel.pkl'
+		
+	# ========================================================================= #
+	# ================= STEP 2. PREPARE AND FORMATTING DATA =================== #
+	# ========================================================================= #
+	NUMBER_OF_FEATURES = len(validationData[0]) - 1
+	NUMBER_OF_TRAINING_POINTS = len(validationData)
+
+	validationX = validationData[:, range(0, NUMBER_OF_FEATURES)]
+	validationY = validationData[:, NUMBER_OF_FEATURES]
 	
 	# ========================================================================= #
-	# ======================== STEP 6. VISUALISATION ========================== #
+	# ===================== STEP 5. PERFORM VALIDATION ======================== #
 	# ========================================================================= #
-	print ("\n")
-	print ("==============================================================")
-	print (" LOGISTIC REGRESSION - LEARNING ")
-	print ("==============================================================")
-	print (" theta0: %.3g" % (clf.intercept_))
-	print (" theta1~n: %s" % (clf.coef_))
-	print (" Alpha: %0.3g" % (clf.C_))
-	print (" Accuracy: %.3g" % (squareError))
-	print ("==============================================================")
-	print ("\n")
+	clf = joblib.load(pklFile)
+	validationData = clf.predict(validationX)
+	validationProb = clf.predict_proba(validationX)
+	
+	return {"intercept":clf.intercept_, "coef":clf.coef_, "accuracy":clf.score(validationX, validationY), \
+		    "validationData":validationData, "validationProb":validationProb}
 
+def predict(predictData, pklFile):
+	# ========================================================================= #
+	# =============== STEP 1. DEFIEN INPUT LEARNT MODEL FILE ================== #
+	# ========================================================================= #
+	if (pklFile == ''):
+		pklFile = 'learntModel.pkl'	
+		
+	# ========================================================================= #
+	# ================= STEP 2. PREPARE AND FORMATTING DATA =================== #
+	# ========================================================================= #
+	NUMBER_OF_FEATURES = len(predictData[0])
+	NUMBER_OF_TRAINING_POINTS = len(predictData)
+
+	predictX = predictData[:, range(0, NUMBER_OF_FEATURES)]
+	
+	# ========================================================================= #
+	# ===== STEP 3. PERFORM FITTING WITH THE BEST ALPHA AND DO PREDICTION ===== #
+	# ========================================================================= #
+	clf = joblib.load(pklFile)
+	
+	predictedData = clf.predict(predictX)
+	predictedProb = clf.predict_proba(predictX)
+	
+	return {"intercept":clf.intercept_, "coef":clf.coef_, "predictedData":predictedData, \
+	        "predictedProb":predictedProb}
+	
 if __name__ == '__main__':
-	main()
+	print ("\n==============================================================")
+	print ("\nHi Dear, You cannot run this script directly")
+	print ("Please have a look at experiment1.py\n")
+	print ("==============================================================\n")	
+	
+# ============================================================================= #
+# END OF THE CODE 
+# ============================================================================= #
