@@ -1,18 +1,18 @@
 import numpy as np
 import sys
 
-LIBRARY_PATH = '/home/zazazakari/ML-Algorithm/logisticRegression/lib'
-PROJECT_PATH = '/home/zazazakari/ML-Algorithm/logisticRegression/example'
-PKL_PATH = '/home/zazazakari/ML-Algorithm/logisticRegression/lib'
+LIBRARY_PATH = '/home/zazazakari/ML-Algorithm/logisticRegression/lib/'
+PROJECT_PATH = '/home/zazazakari/ML-Algorithm/logisticRegression/example/'
+PKL_PATH = '/home/zazazakari/ML-Algorithm/logisticRegression/example/'
 
 sys.path.append(LIBRARY_PATH)
 import logisticRegression
 
 def main():
-	TRAINING_SET_FILE_NAME = PROJECT_PATH + '/trainingSet.txt'
-	VALIDATION_SET_FILE_NAME = PROJECT_PATH + '/validationSet.txt'
-	PREDICTION_SET_FILE_NAME = PROJECT_PATH + '/testSet.txt'
-	LEARNT_MODEL_NAME = ''
+	TRAINING_SET_FILE_NAME = PROJECT_PATH + 'trainingSet.txt'
+	VALIDATION_SET_FILE_NAME = PROJECT_PATH + 'validationSet.txt'
+	PREDICTION_SET_FILE_NAME = PROJECT_PATH + 'testSet.txt'
+	LEARNT_MODEL_NAME = PKL_PATH + 'experiment1.pkl'
 	
 	# ================================================== #
 	# =============== STEP 1. TRAINING ================= #
