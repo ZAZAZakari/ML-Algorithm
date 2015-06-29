@@ -14,7 +14,7 @@ PREDICTION_SET_FILE_NAME = PROJECT_PATH + 'testSet.txt'
 LEARNT_MODEL_NAME = PKL_PATH + 'experiment1.pkl'
 
 # ====== YOU NEED TO HAVE YOUR Xvfb RUNNING FOR VISUALISATION ======= #
-VISUALISATION = True
+VISUALISATION = False
 VISUALISATION_FILE_NAME = PROJECT_PATH + 'experiment1.png'
 
 # ====================================================================== #
