@@ -5,7 +5,7 @@ import os
 
 def train(trainingData, pklFile):
 	# ========================================================================= #
-	# =============== STEP 1. DEFIEN OUTPUT LEARNT MODEL FILE ================= #
+	# =============== STEP 1. DEFINE OUTPUT LEARNT MODEL FILE ================= #
 	# ========================================================================= #
 	if (pklFile == ''):
 		os.system('rm -rf learntModel & mkdir learntModel')
