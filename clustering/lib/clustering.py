@@ -40,17 +40,39 @@ def predict(testData, pklFile):
 def visualise(inputData, clusteredResult, outputFile):
 	import matplotlib.pyplot as plt
 	from itertools import cycle
+	from mpl_toolkits.mplot3d import Axes3D
 
-	plt.figure(1)
+	INPUT_DIMENSION = len(inputData[0])
 	colors = cycle('rbgcmykrbgcmykrbgcmykrbgcmyk')
-	
-	for k, col in zip(range(clusteredResult['numberOfClusters']), colors):
-		my_member = clusteredResult['labels'] == k
-		
-		plt.plot(inputData[my_member, 0], inputData[my_member, 1], col + '.')
-		plt.plot(clusteredResult['clusterCenters'][k,0], clusteredResult['clusterCenters'][k,1], \
-		         'o', markerfacecolor=col, markeredgecolor='k', markersize=14)
-	plt.savefig(outputFile)
+
+	figure = plt.figure()
+
+	if (INPUT_DIMENSION == 2):
+		for k, col in zip(range(clusteredResult['numberOfClusters']), colors):
+			my_member = clusteredResult['labels'] == k
+			plt.scatter(inputData[my_member,0], inputData[my_member,1], \
+						c=col, marker='o', s=20, edgecolor='k')
+			plt.scatter(clusteredResult['clusterCenters'][k,0], \
+						clusteredResult['clusterCenters'][k,1], \
+						c=col, marker='o', s=50, edgecolor='k')
+
+	elif (INPUT_DIMENSION == 3):
+		ax = figure.add_subplot(111, projection='3d')
+		for k, col in zip(range(clusteredResult['numberOfClusters']), colors):
+			my_member = clusteredResult['labels'] == k
+			ax.scatter(inputData[my_member, 0], \
+					   inputData[my_member, 1], \
+					   inputData[my_member, 2], \
+					   c=col, marker='o', s=20, edgecolor='k')
+			ax.scatter(clusteredResult['clusterCenters'][k,0], \
+					   clusteredResult['clusterCenters'][k,1], \
+					   clusteredResult['clusterCenters'][k,2], \
+					   c=col, marker='o', s=50, edgecolor='k')
+	else:
+		print ('The dataset cannot be visualised')
+
+	#plt.savefig(outputFile)
+	plt.show()
 
 if __name__ == '__main__':
 	print ("\n==============================================================")
